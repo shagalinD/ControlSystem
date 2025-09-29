@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"kopatel_online/models"
 	"log"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Config struct {
@@ -23,19 +25,46 @@ func NewConnection(cfg *Config) (*gorm.DB, error) {
         cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName,
     )
     
-    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-    if err != nil {
-        return nil, fmt.Errorf("failed to connect to database: %w", err)
+    // Настройка логгера GORM
+    gormConfig := &gorm.Config{
+        Logger: logger.Default.LogMode(logger.Info),
+        NowFunc: func() time.Time {
+            return time.Now().UTC()
+        },
     }
+    
+    // Повторные попытки подключения (для Docker-окружения)
+    var db *gorm.DB
+    var err error
+    for i := 0; i < 5; i++ {
+        db, err = gorm.Open(postgres.Open(dsn), gormConfig)
+        if err == nil {
+            break
+        }
+        log.Printf("Attempt %d: failed to connect to database, retrying...", i+1)
+        time.Sleep(3 * time.Second)
+    }
+    
+    if err != nil {
+        return nil, fmt.Errorf("failed to connect to database after 5 attempts: %w", err)
+    }
+    
+    // Настройка пула соединений
+    sqlDB, err := db.DB()
+    if err != nil {
+        return nil, err
+    }
+    
+    sqlDB.SetMaxOpenConns(25)
+    sqlDB.SetMaxIdleConns(25)
+    sqlDB.SetConnMaxLifetime(5 * time.Minute)
     
     log.Println("Connected to PostgreSQL database")
     
-    // Автомиграция
     if err := autoMigrate(db); err != nil {
         return nil, err
     }
     
-    // Создание начальных данных
     if err := seedData(db); err != nil {
         return nil, err
     }
@@ -86,3 +115,4 @@ func seedData(db *gorm.DB) error {
     
     return nil
 }
+
