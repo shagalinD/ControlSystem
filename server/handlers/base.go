@@ -39,6 +39,7 @@ func (h *Handler) success(c *gin.Context, data interface{}, message string) {
     })
 }
 
+
 // Ошибка
 func (h *Handler) error(c *gin.Context, status int, message string) {
     c.JSON(status, Response{
