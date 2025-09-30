@@ -83,6 +83,16 @@ func main() {
             defects.PATCH("/:id/status", defectHandler.UpdateDefectStatus)
             defects.DELETE("/:id", defectHandler.DeleteDefect)
         }
+
+        attachmentHandler := handlers.NewAttachmentHandler(db)
+
+        attachments := api.Group("/attachments")
+        {
+            attachments.POST("/defect/:defect_id", attachmentHandler.UploadAttachment)
+            attachments.GET("/defect/:defect_id", attachmentHandler.GetAttachments)
+            attachments.GET("/:id/download", attachmentHandler.DownloadAttachment)
+            attachments.DELETE("/:id", attachmentHandler.DeleteAttachment)
+        }
         
         // Комментарии
         comments := api.Group("/comments")

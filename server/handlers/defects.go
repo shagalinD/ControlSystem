@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"kopatel_online/models"
 	"strconv"
 
@@ -150,67 +151,6 @@ func (h *DefectHandler) CreateDefect(c *gin.Context) {
     }, "Defect created successfully")
 }
 
-// UpdateDefect - обновление дефекта
-func (h *DefectHandler) UpdateDefect(c *gin.Context) {
-    defectID := c.Param("id")
-    
-    var defect models.Defect
-    if err := h.DB.First(&defect, defectID).Error; err != nil {
-        h.notFound(c, "Defect not found")
-        return
-    }
-    
-    var req models.DefectUpdateRequest
-    if !h.validateRequest(c, &req) {
-        return
-    }
-    
-    
-    // Обновляем поля, если они предоставлены
-    if req.Title != nil {
-        defect.Title = *req.Title
-    }
-    if req.Description != nil {
-        defect.Description = *req.Description
-    }
-    if req.Status != nil {
-        defect.Status = *req.Status
-    }
-    if req.Priority != nil {
-        defect.Priority = *req.Priority
-    }
-    if req.Deadline != nil {
-        defect.Deadline = req.Deadline
-    }
-    if req.AssigneeID != nil {
-        // Проверяем существование исполнителя
-        if *req.AssigneeID != 0 {
-            var assignee models.User
-            if err := h.DB.First(&assignee, *req.AssigneeID).Error; err != nil {
-                h.badRequest(c, "Assignee not found")
-                return
-            }
-        }
-        defect.AssigneeID = req.AssigneeID
-    }
-    
-    if err := h.DB.Save(&defect).Error; err != nil {
-        h.internalError(c, "Failed to update defect")
-        return
-    }
-    
-    // Загружаем обновленные данные
-    h.DB.
-        Preload("Project").
-        Preload("Author").
-        Preload("Assignee").
-        First(&defect, defect.ID)
-    
-    h.success(c, gin.H{
-        "defect": defect,
-    }, "Defect updated successfully")
-}
-
 // UpdateDefectStatus - обновление только статуса дефекта
 func (h *DefectHandler) UpdateDefectStatus(c *gin.Context) {
     defectID := c.Param("id")
@@ -308,4 +248,84 @@ func (h *DefectHandler) GetMyDefects(c *gin.Context) {
             "total_pages": (int(total) + pageSize - 1) / pageSize,
         },
     }, "My defects retrieved successfully")
+}
+
+func (h *DefectHandler) logDefectChange(defectID uint, userID uint, field string, oldValue, newValue string) {
+    history := models.DefectHistory{
+        DefectID:  defectID,
+        Field:     field,
+        OldValue:  oldValue,
+        NewValue:  newValue,
+        ChangedBy: userID,
+    }
+    h.DB.Create(&history)
+}
+
+// Обновим метод UpdateDefect
+func (h *DefectHandler) UpdateDefect(c *gin.Context) {
+    defectID := c.Param("id")
+    
+    var defect models.Defect
+    if err := h.DB.First(&defect, defectID).Error; err != nil {
+        h.notFound(c, "Defect not found")
+        return
+    }
+    
+    var req models.DefectUpdateRequest
+    if !h.validateRequest(c, &req) {
+        return
+    }
+    
+    user, err := h.GetUserFromContext(c)
+    if err != nil {
+        h.unauthorized(c, "User not authenticated")
+        return
+    }
+    
+    // Логируем изменения
+    if req.Title != nil && *req.Title != defect.Title {
+        h.logDefectChange(defect.ID, user.ID, "title", defect.Title, *req.Title)
+        defect.Title = *req.Title
+    }
+    if req.Description != nil && *req.Description != defect.Description {
+        h.logDefectChange(defect.ID, user.ID, "description", defect.Description, *req.Description)
+        defect.Description = *req.Description
+    }
+    if req.Status != nil && *req.Status != defect.Status {
+        h.logDefectChange(defect.ID, user.ID, "status", string(defect.Status), string(*req.Status))
+        defect.Status = *req.Status
+    }
+    if req.Priority != nil && *req.Priority != defect.Priority {
+        h.logDefectChange(defect.ID, user.ID, "priority", string(defect.Priority), string(*req.Priority))
+        defect.Priority = *req.Priority
+    }
+    if req.AssigneeID != nil {
+        oldAssignee := "none"
+        if defect.AssigneeID != nil {
+            oldAssignee = fmt.Sprintf("%d", *defect.AssigneeID)
+        }
+        newAssignee := "none"
+        if *req.AssigneeID != 0 {
+            newAssignee = fmt.Sprintf("%d", *req.AssigneeID)
+        }
+        h.logDefectChange(defect.ID, user.ID, "assignee", oldAssignee, newAssignee)
+        defect.AssigneeID = req.AssigneeID
+    }
+    
+    if err := h.DB.Save(&defect).Error; err != nil {
+        h.internalError(c, "Failed to update defect")
+        return
+    }
+    
+    h.DB.
+        Preload("Project").
+        Preload("Author").
+        Preload("Assignee").
+        Preload("History").
+        Preload("History.Changer").
+        First(&defect, defect.ID)
+    
+    h.success(c, gin.H{
+        "defect": defect,
+    }, "Defect updated successfully")
 }
