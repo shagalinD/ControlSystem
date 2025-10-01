@@ -159,3 +159,35 @@ export interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
 }
+
+// Добавляем недостающие типы
+export interface CreateProjectData {
+  name: string
+  description: string
+  manager_id: number
+}
+
+export interface UpdateProjectData {
+  name?: string
+  description?: string
+  manager_id?: number
+}
+
+// Дополняем типы для форм
+export interface CreateDefectFormData {
+  title: string
+  description: string
+  priority: DefectPriority
+  deadline?: string
+  project_id: number
+  assignee_id?: number
+}
+
+export interface UpdateDefectFormData {
+  title?: string
+  description?: string
+  status?: DefectStatus
+  priority?: DefectPriority
+  deadline?: string
+  assignee_id?: number
+}

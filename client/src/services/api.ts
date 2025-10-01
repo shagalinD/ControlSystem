@@ -10,7 +10,7 @@ export const api = axios.create({
   },
 })
 
-// Request interceptor для добавления токена
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
@@ -24,12 +24,11 @@ api.interceptors.request.use(
   }
 )
 
-// Response interceptor для обработки ошибок
+// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Токен истек или невалидный
       localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN)
       localStorage.removeItem(STORAGE_KEYS.USER_DATA)
       window.location.href = '/login'
@@ -38,7 +37,7 @@ api.interceptors.response.use(
   }
 )
 
-// Вспомогательные функции для обработки ответов
+// Вспомогательные функции
 export const handleApiResponse = <T>(response: { data: ApiResponse<T> }): T => {
   if (response.data.success) {
     return response.data.data
@@ -51,4 +50,9 @@ export const handleApiError = (error: unknown): string => {
     return error.response?.data?.error || error.message || 'Network error'
   }
   return error instanceof Error ? error.message : 'Unknown error occurred'
+}
+
+// Функция для отмены запросов
+export const createCancelToken = () => {
+  return axios.CancelToken.source()
 }
