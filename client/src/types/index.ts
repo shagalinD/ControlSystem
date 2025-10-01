@@ -1,15 +1,14 @@
-export interface ApiResponse<T> {
-  success: boolean
-  message: string
-  data: T
-}
+// src/types/index.ts
 
-export interface PaginationMeta {
-  page: number
-  page_size: number
-  total: number
-  total_pages: number
-}
+// Базовые типы
+export type UserRole = 'engineer' | 'manager' | 'observer'
+export type DefectStatus =
+  | 'new'
+  | 'in_progress'
+  | 'on_review'
+  | 'closed'
+  | 'cancelled'
+export type DefectPriority = 'low' | 'medium' | 'high' | 'critical'
 
 // Пользователь
 export interface User {
@@ -17,7 +16,7 @@ export interface User {
   email: string
   full_name: string
   role_id: number
-  role_name: 'engineer' | 'manager' | 'observer'
+  role_name: UserRole
   created_at?: string
   updated_at?: string
 }
@@ -32,6 +31,7 @@ export interface Project {
   updated_at: string
   manager: User
   defects?: Defect[]
+  defects_count?: number
 }
 
 // Дефект
@@ -52,6 +52,7 @@ export interface Defect {
   assignee?: User
   comments?: Comment[]
   attachments?: Attachment[]
+  history?: DefectHistory[]
 }
 
 // Комментарий
@@ -73,6 +74,7 @@ export interface Attachment {
   uploaded_by: number
   created_at: string
   uploader: User
+  download_url?: string
 }
 
 // История изменений дефекта
@@ -84,38 +86,48 @@ export interface DefectHistory {
   new_value: string
   changed_by: number
   created_at: string
+  user?: User
+}
+
+// Пагинация
+export interface Pagination {
+  page: number
+  page_size: number
+  total: number
+  total_pages: number
+}
+
+// API Responses
+export interface ApiResponse<T = any> {
+  success: boolean
+  message: string
+  data: T
+  error?: string
+}
+
+export interface LoginResponse {
+  token: string
   user: User
 }
 
-// Отчеты
-export interface DefectsReport {
-  total_defects: number
-  defects_by_status: Array<{ status: DefectStatus; count: number }>
-  defects_by_priority: Array<{ priority: DefectPriority; count: number }>
-  overdue_defects: number
-  avg_resolution_time: number
+export interface DefectsResponse {
+  defects: Defect[]
+  pagination: Pagination
 }
 
-// Фильтры
-export interface DefectFilters {
-  project_id?: number
-  status?: DefectStatus
-  priority?: DefectPriority
-  assignee_id?: number
-  page?: number
-  page_size?: number
-  sort_by?: string
-  order?: 'asc' | 'desc'
-  search?: string
+export interface ProjectsResponse {
+  projects: Project[]
+  page: number
+  pageSize: number
 }
 
-// Формы данных
-export interface LoginData {
+// Формы и DTO
+export interface LoginFormData {
   email: string
   password: string
 }
 
-export interface RegisterData {
+export interface RegisterFormData {
   email: string
   password: string
   full_name: string
@@ -136,27 +148,20 @@ export interface UpdateDefectData {
   description?: string
   status?: DefectStatus
   priority?: DefectPriority
-  assignee_id?: number
   deadline?: string
+  assignee_id?: number
 }
 
-export interface CreateProjectData {
-  name: string
-  description: string
-  manager_id: number
+// Фильтры
+export interface DefectFilters {
+  project_id?: number
+  status?: DefectStatus
+  priority?: DefectPriority
+  assignee_id?: number
+  author_id?: number
+  page?: number
+  page_size?: number
+  sort_by?: string
+  order?: 'asc' | 'desc'
+  search?: string
 }
-
-export interface CreateCommentData {
-  text: string
-  defect_id: number
-}
-
-// Enums
-export type DefectStatus =
-  | 'new'
-  | 'in_progress'
-  | 'on_review'
-  | 'closed'
-  | 'cancelled'
-export type DefectPriority = 'low' | 'medium' | 'high' | 'critical'
-export type UserRole = 'engineer' | 'manager' | 'observer'
