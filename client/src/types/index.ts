@@ -112,6 +112,7 @@ export interface DefectFilters extends PaginationParams {
   status?: DefectStatus
   priority?: DefectPriority
   assignee_id?: number
+  search?: string // Добавляем поиск
   sort_by?: string
   order?: 'asc' | 'desc'
 }

@@ -7,9 +7,12 @@ import {
 } from 'react-router-dom'
 import { useAuthStore } from './store/authStore'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { Layout } from './components/layout/Layout'
 import { LoginPage } from './pages/LoginPage'
 import { HomePage } from './pages/HomePage'
+import { DefectsPage } from './pages/DefectsPage'
 import { LoadingSpinner } from './components/ui/LoadingSpinner'
+import { CreateDefectPage } from './pages/CreateDefectPage'
 
 const App: React.FC = () => {
   const { isAuthenticated, initializeAuth, isLoading } = useAuthStore()
@@ -35,15 +38,20 @@ const App: React.FC = () => {
             !isAuthenticated ? <LoginPage /> : <Navigate to='/' replace />
           }
         />
+
         <Route
           path='/'
           element={
             <ProtectedRoute>
-              <HomePage />
+              <Layout />
             </ProtectedRoute>
           }
-        />
-        <Route path='*' element={<Navigate to='/' replace />} />
+        >
+          <Route index element={<HomePage />} />
+          <Route path='defects' element={<DefectsPage />} />
+          <Route path='defects/create' element={<CreateDefectPage />} />
+          <Route path='*' element={<Navigate to='/' replace />} />
+        </Route>
       </Routes>
     </Router>
   )
