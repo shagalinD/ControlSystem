@@ -1,16 +1,4 @@
-// src/types/index.ts
-
 // Базовые типы
-export type UserRole = 'engineer' | 'manager' | 'observer'
-export type DefectStatus =
-  | 'new'
-  | 'in_progress'
-  | 'on_review'
-  | 'closed'
-  | 'cancelled'
-export type DefectPriority = 'low' | 'medium' | 'high' | 'critical'
-
-// Пользователь
 export interface User {
   id: number
   email: string
@@ -21,7 +9,6 @@ export interface User {
   updated_at?: string
 }
 
-// Проект
 export interface Project {
   id: number
   name: string
@@ -31,10 +18,8 @@ export interface Project {
   updated_at: string
   manager: User
   defects?: Defect[]
-  defects_count?: number
 }
 
-// Дефект
 export interface Defect {
   id: number
   title: string
@@ -55,7 +40,6 @@ export interface Defect {
   history?: DefectHistory[]
 }
 
-// Комментарий
 export interface Comment {
   id: number
   text: string
@@ -65,19 +49,16 @@ export interface Comment {
   author: User
 }
 
-// Вложение
 export interface Attachment {
   id: number
   filename: string
   file_size: number
   mime_type: string
   uploaded_by: number
-  created_at: string
+  created_at?: string
   uploader: User
-  download_url?: string
 }
 
-// История изменений дефекта
 export interface DefectHistory {
   id: number
   defect_id: number
@@ -89,39 +70,7 @@ export interface DefectHistory {
   user?: User
 }
 
-// Пагинация
-export interface Pagination {
-  page: number
-  page_size: number
-  total: number
-  total_pages: number
-}
-
-// API Responses
-export interface ApiResponse<T = any> {
-  success: boolean
-  message: string
-  data: T
-  error?: string
-}
-
-export interface LoginResponse {
-  token: string
-  user: User
-}
-
-export interface DefectsResponse {
-  defects: Defect[]
-  pagination: Pagination
-}
-
-export interface ProjectsResponse {
-  projects: Project[]
-  page: number
-  pageSize: number
-}
-
-// Формы и DTO
+// Типы для форм
 export interface LoginFormData {
   email: string
   password: string
@@ -152,16 +101,61 @@ export interface UpdateDefectData {
   assignee_id?: number
 }
 
-// Фильтры
-export interface DefectFilters {
+// Типы для фильтров и пагинации
+export interface PaginationParams {
+  page?: number
+  page_size?: number
+}
+
+export interface DefectFilters extends PaginationParams {
   project_id?: number
   status?: DefectStatus
   priority?: DefectPriority
   assignee_id?: number
-  author_id?: number
-  page?: number
-  page_size?: number
   sort_by?: string
   order?: 'asc' | 'desc'
-  search?: string
+}
+
+export interface ProjectFilters extends PaginationParams {
+  manager_id?: number
+}
+
+// Response types
+export interface ApiResponse<T = unknown> {
+  success: boolean
+  message: string
+  data: T
+}
+
+export interface AuthResponse {
+  token: string
+  user: User
+}
+
+export interface PaginatedResponse<T = unknown> {
+  data: T[]
+  pagination: {
+    page: number
+    page_size: number
+    total: number
+    total_pages: number
+  }
+}
+
+// Union types
+export type UserRole = 'engineer' | 'manager' | 'observer'
+export type DefectStatus =
+  | 'new'
+  | 'in_progress'
+  | 'on_review'
+  | 'closed'
+  | 'cancelled'
+export type DefectPriority = 'low' | 'medium' | 'high' | 'critical'
+
+// Store types
+export interface AuthState {
+  user: User | null
+  token: string | null
+  isAuthenticated: boolean
+  isLoading: boolean
 }
