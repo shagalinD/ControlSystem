@@ -4,6 +4,7 @@ import type {
   ProjectFilters,
   PaginatedResponse,
   CreateProjectData,
+  UpdateProjectData,
   ApiResponse,
 } from '../types'
 
@@ -51,7 +52,7 @@ export const projectService = {
 
   async updateProject(
     id: number,
-    projectData: Partial<CreateProjectData>
+    projectData: UpdateProjectData
   ): Promise<{ project: Project }> {
     try {
       const response = await api.put<ApiResponse<{ project: Project }>>(
@@ -68,23 +69,6 @@ export const projectService = {
     try {
       const response = await api.delete<ApiResponse<{ message: string }>>(
         `/api/projects/${id}`
-      )
-      return handleApiResponse(response)
-    } catch (error) {
-      throw new Error(handleApiError(error))
-    }
-  },
-
-  async getProjectDefects(
-    projectId: number,
-    filters?: any
-  ): Promise<PaginatedResponse<any>> {
-    try {
-      const response = await api.get<ApiResponse<PaginatedResponse<any>>>(
-        `/api/projects/${projectId}/defects`,
-        {
-          params: filters,
-        }
       )
       return handleApiResponse(response)
     } catch (error) {
