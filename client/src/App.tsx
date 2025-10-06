@@ -13,6 +13,9 @@ import { HomePage } from './pages/HomePage'
 import { DefectsPage } from './pages/DefectsPage'
 import { LoadingSpinner } from './components/ui/LoadingSpinner'
 import { CreateDefectPage } from './pages/CreateDefectPage'
+import { ProjectsPage } from './pages/ProjectPage'
+import { CreateProjectPage } from './pages/CreateProjectPage'
+import { ProjectDetailsPage } from './pages/ProjectDetailsPage'
 
 const App: React.FC = () => {
   const { isAuthenticated, initializeAuth, isLoading } = useAuthStore()
@@ -50,6 +53,10 @@ const App: React.FC = () => {
           <Route index element={<HomePage />} />
           <Route path='defects' element={<DefectsPage />} />
           <Route path='defects/create' element={<CreateDefectPage />} />
+          // Внутри Route с Layout добавляем:
+          <Route path='projects' element={<ProjectsPage />} />
+          <Route path='projects/create' element={<CreateProjectPage />} />
+          <Route path='projects/:id' element={<ProjectDetailsPage />} />
           <Route path='*' element={<Navigate to='/' replace />} />
         </Route>
       </Routes>
