@@ -184,11 +184,22 @@ export interface CreateDefectFormData {
   assignee_id?: number
 }
 
+// Исправляем типы для форм
 export interface UpdateDefectFormData {
   title?: string
   description?: string
   status?: DefectStatus
   priority?: DefectPriority
   deadline?: string
+  project_id?: number // Добавляем project_id
+  assignee_id?: number
+}
+
+export interface CreateDefectFormData {
+  title: string
+  description: string
+  priority: DefectPriority
+  deadline?: string
+  project_id: number // Убедимся что здесь тоже есть
   assignee_id?: number
 }
