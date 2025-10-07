@@ -50,8 +50,8 @@
 ### 1. Клонирование репозитория
 
 ```bash
-git clone <repository-url>
-cd kopatel_online
+git clone https://github.com/shagalinD/ControlSystem
+cd ControlSystem
 ```
 
 ### 2. Настройка Backend
