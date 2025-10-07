@@ -203,3 +203,33 @@ export interface CreateDefectFormData {
   project_id: number // Убедимся что здесь тоже есть
   assignee_id?: number
 }
+
+// Добавляем типы для отчетов
+export interface DefectsReport {
+  total_defects: number
+  defects_by_status: Array<{ status: string; count: number }>
+  defects_by_priority: Array<{ priority: string; count: number }>
+  overdue_defects: number
+  avg_resolution_time: number
+}
+
+export interface ProjectReport {
+  project_id: number
+  project_name: string
+  total_defects: number
+  defects_by_status: Array<{ status: string; count: number }>
+  defects_by_priority: Array<{ priority: string; count: number }>
+  completion_percentage: number
+}
+
+// Добавляем тип для обновления профиля
+export interface UpdateProfileData {
+  full_name?: string
+  email?: string
+}
+
+export interface ChangePasswordData {
+  current_password: string
+  new_password: string
+  confirm_password: string
+}
