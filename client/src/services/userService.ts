@@ -1,5 +1,10 @@
 import { api, handleApiResponse, handleApiError } from './api'
-import type { User, ApiResponse, PaginatedResponse } from '../types'
+import type {
+  User,
+  ApiResponse,
+  PaginatedResponse,
+  UpdateProfileData,
+} from '../types'
 
 export const userService = {
   async getUsers(): Promise<PaginatedResponse<User>> {
@@ -24,9 +29,32 @@ export const userService = {
     }
   },
 
+  async getEngineers(): Promise<PaginatedResponse<User>> {
+    try {
+      const response = await api.get<ApiResponse<PaginatedResponse<User>>>(
+        '/api/users/engineers'
+      )
+      return handleApiResponse(response)
+    } catch (error) {
+      throw new Error(handleApiError(error))
+    }
+  },
+
+  async getManagers(): Promise<PaginatedResponse<User>> {
+    try {
+      const response = await api.get<ApiResponse<PaginatedResponse<User>>>(
+        '/api/users/managers'
+      )
+      return handleApiResponse(response)
+    } catch (error) {
+      throw new Error(handleApiError(error))
+    }
+  },
+  // Добавляем методы в userService:
+
   async updateUserProfile(
     userId: number,
-    userData: Partial<User>
+    userData: UpdateProfileData
   ): Promise<{ user: User }> {
     try {
       const response = await api.put<ApiResponse<{ user: User }>>(
@@ -50,28 +78,6 @@ export const userService = {
           current_password: currentPassword,
           new_password: newPassword,
         }
-      )
-      return handleApiResponse(response)
-    } catch (error) {
-      throw new Error(handleApiError(error))
-    }
-  },
-
-  async getEngineers(): Promise<PaginatedResponse<User>> {
-    try {
-      const response = await api.get<ApiResponse<PaginatedResponse<User>>>(
-        '/api/users/engineers'
-      )
-      return handleApiResponse(response)
-    } catch (error) {
-      throw new Error(handleApiError(error))
-    }
-  },
-
-  async getManagers(): Promise<PaginatedResponse<User>> {
-    try {
-      const response = await api.get<ApiResponse<PaginatedResponse<User>>>(
-        '/api/users/managers'
       )
       return handleApiResponse(response)
     } catch (error) {

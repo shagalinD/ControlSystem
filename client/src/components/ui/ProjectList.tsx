@@ -55,7 +55,8 @@ export const ProjectList: React.FC<ProjectListProps> = ({ projects }) => {
                 {canEditProject && (
                   <Link
                     to={`/projects/${project.id}/edit`}
-                    className='text-gray-400 hover:text-gray-600'
+                    className='text-gray-400 hover:text-gray-600 text-sm'
+                    title='Редактировать проект'
                   >
                     ✏️
                   </Link>

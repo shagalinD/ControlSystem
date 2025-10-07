@@ -45,6 +45,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
       icon: '📊',
       roles: ['manager', 'observer'],
     },
+    {
+      path: ROUTES.PROFILE,
+      label: 'Мой профиль',
+      icon: '👤',
+      roles: ['engineer', 'manager', 'observer'],
+    },
   ]
 
   const filteredNavItems = navItems.filter((item) =>
