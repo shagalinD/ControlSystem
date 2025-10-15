@@ -60,18 +60,6 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            <div className='bg-white p-6 rounded-lg shadow'>
-              <h2 className='text-xl font-semibold mb-4'>Быстрые действия</h2>
-              <div className='flex flex-wrap gap-4'>
-                <Button>Просмотреть дефекты</Button>
-                <Button>Создать дефект</Button>
-                {user?.role_name === 'manager' && (
-                  <Button>Управление проектами</Button>
-                )}
-                <Button variant='secondary'>Отчеты</Button>
-              </div>
-            </div>
           </div>
         </div>
       </div>

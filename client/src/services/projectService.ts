@@ -2,18 +2,25 @@ import { api, handleApiResponse, handleApiError } from './api'
 import type {
   Project,
   ProjectFilters,
-  PaginatedResponse,
   CreateProjectData,
-  UpdateProjectData,
   ApiResponse,
 } from '../types'
 
+// Создаем интерфейс для ответа сервера
+interface ProjectsResponse {
+  projects: Project[]
+  pagination: {
+    page: number
+    page_size: number
+    total: number
+    total_pages: number
+  }
+}
+
 export const projectService = {
-  async getProjects(
-    filters?: ProjectFilters
-  ): Promise<PaginatedResponse<Project>> {
+  async getProjects(filters?: ProjectFilters): Promise<ProjectsResponse> {
     try {
-      const response = await api.get<ApiResponse<PaginatedResponse<Project>>>(
+      const response = await api.get<ApiResponse<ProjectsResponse>>(
         '/api/projects',
         {
           params: filters,
@@ -52,7 +59,7 @@ export const projectService = {
 
   async updateProject(
     id: number,
-    projectData: UpdateProjectData
+    projectData: Partial<CreateProjectData>
   ): Promise<{ project: Project }> {
     try {
       const response = await api.put<ApiResponse<{ project: Project }>>(
@@ -69,6 +76,20 @@ export const projectService = {
     try {
       const response = await api.delete<ApiResponse<{ message: string }>>(
         `/api/projects/${id}`
+      )
+      return handleApiResponse(response)
+    } catch (error) {
+      throw new Error(handleApiError(error))
+    }
+  },
+
+  async getProjectDefects(projectId: number, filters?: any): Promise<any> {
+    try {
+      const response = await api.get<ApiResponse<any>>(
+        `/api/projects/${projectId}/defects`,
+        {
+          params: filters,
+        }
       )
       return handleApiResponse(response)
     } catch (error) {

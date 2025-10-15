@@ -2,19 +2,27 @@ import { api, handleApiResponse, handleApiError } from './api'
 import type {
   Defect,
   DefectFilters,
-  PaginatedResponse,
   CreateDefectData,
   UpdateDefectData,
   DefectStatus,
   ApiResponse,
 } from '../types'
 
+// Создаем интерфейс для ответа сервера
+interface DefectsResponse {
+  defects: Defect[]
+  pagination: {
+    page: number
+    page_size: number
+    total: number
+    total_pages: number
+  }
+}
+
 export const defectService = {
-  async getDefects(
-    filters?: DefectFilters
-  ): Promise<PaginatedResponse<Defect>> {
+  async getDefects(filters?: DefectFilters): Promise<DefectsResponse> {
     try {
-      const response = await api.get<ApiResponse<PaginatedResponse<Defect>>>(
+      const response = await api.get<ApiResponse<DefectsResponse>>(
         '/api/defects',
         {
           params: filters,
@@ -92,11 +100,9 @@ export const defectService = {
     }
   },
 
-  async getMyDefects(
-    filters?: DefectFilters
-  ): Promise<PaginatedResponse<Defect>> {
+  async getMyDefects(filters?: DefectFilters): Promise<DefectsResponse> {
     try {
-      const response = await api.get<ApiResponse<PaginatedResponse<Defect>>>(
+      const response = await api.get<ApiResponse<DefectsResponse>>(
         '/api/defects/my',
         {
           params: filters,

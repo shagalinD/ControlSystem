@@ -25,7 +25,7 @@ export const CreateProjectPage: React.FC = () => {
     const loadManagers = async () => {
       try {
         const response = await userService.getManagers()
-        setManagers(response.data)
+        setManagers(response.data || []) // Исправляем здесь
       } catch (err) {
         setError('Ошибка загрузки списка менеджеров')
       } finally {

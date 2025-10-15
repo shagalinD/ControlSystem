@@ -44,6 +44,12 @@ export const Header: React.FC = () => {
                   Отчеты
                 </Link>
               )}
+              <Link
+                to='/profile'
+                className='text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium'
+              >
+                Мой профиль
+              </Link>
             </nav>
           </div>
 

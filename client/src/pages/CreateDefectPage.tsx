@@ -31,8 +31,8 @@ export const CreateDefectPage: React.FC = () => {
           userService.getEngineers(),
         ])
 
-        setProjects(projectsResponse.data)
-        setEngineers(engineersResponse.data)
+        setProjects(projectsResponse.projects || []) // Исправляем здесь
+        setEngineers(engineersResponse.data || [])
       } catch (err) {
         setError('Ошибка загрузки данных')
       } finally {

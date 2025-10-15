@@ -24,7 +24,8 @@ export const DefectsPage: React.FC = () => {
 
     try {
       const response = await defectService.getDefects(filters)
-      setDefects(response.data)
+      // Исправляем здесь: сервер возвращает { defects: [], pagination: {} }
+      setDefects(response.defects || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка загрузки дефектов')
     } finally {

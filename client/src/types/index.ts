@@ -233,3 +233,11 @@ export interface ChangePasswordData {
   new_password: string
   confirm_password: string
 }
+
+export interface RegisterFormData {
+  email: string
+  password: string
+  full_name: string
+  role_id: number
+  confirm_password?: string // Добавляем для валидации на клиенте
+}

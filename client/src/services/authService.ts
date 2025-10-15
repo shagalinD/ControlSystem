@@ -22,9 +22,12 @@ export const authService = {
 
   async register(userData: RegisterFormData): Promise<{ user: User }> {
     try {
+      // Удаляем confirm_password перед отправкой на сервер
+      const { confirm_password, ...dataToSend } = userData
+
       const response = await api.post<ApiResponse<{ user: User }>>(
         '/auth/register',
-        userData
+        dataToSend
       )
       return handleApiResponse(response)
     } catch (error) {

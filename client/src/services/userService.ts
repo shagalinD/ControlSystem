@@ -1,16 +1,39 @@
 import { api, handleApiResponse, handleApiError } from './api'
-import type {
-  User,
-  ApiResponse,
-  PaginatedResponse,
-  UpdateProfileData,
-} from '../types'
-
+import type { User, ApiResponse, UpdateProfileData } from '../types'
+interface UsersResponse {
+  data: User[]
+  pagination: {
+    page: number
+    page_size: number
+    total: number
+    total_pages: number
+  }
+}
 export const userService = {
-  async getUsers(): Promise<PaginatedResponse<User>> {
+  async getUsers(): Promise<UsersResponse> {
     try {
-      const response = await api.get<ApiResponse<PaginatedResponse<User>>>(
-        '/api/users'
+      const response = await api.get<ApiResponse<UsersResponse>>('/api/users')
+      return handleApiResponse(response)
+    } catch (error) {
+      throw new Error(handleApiError(error))
+    }
+  },
+
+  async getEngineers(): Promise<UsersResponse> {
+    try {
+      const response = await api.get<ApiResponse<UsersResponse>>(
+        '/api/users/engineers'
+      )
+      return handleApiResponse(response)
+    } catch (error) {
+      throw new Error(handleApiError(error))
+    }
+  },
+
+  async getManagers(): Promise<UsersResponse> {
+    try {
+      const response = await api.get<ApiResponse<UsersResponse>>(
+        '/api/users/managers'
       )
       return handleApiResponse(response)
     } catch (error) {
@@ -28,29 +51,6 @@ export const userService = {
       throw new Error(handleApiError(error))
     }
   },
-
-  async getEngineers(): Promise<PaginatedResponse<User>> {
-    try {
-      const response = await api.get<ApiResponse<PaginatedResponse<User>>>(
-        '/api/users/engineers'
-      )
-      return handleApiResponse(response)
-    } catch (error) {
-      throw new Error(handleApiError(error))
-    }
-  },
-
-  async getManagers(): Promise<PaginatedResponse<User>> {
-    try {
-      const response = await api.get<ApiResponse<PaginatedResponse<User>>>(
-        '/api/users/managers'
-      )
-      return handleApiResponse(response)
-    } catch (error) {
-      throw new Error(handleApiError(error))
-    }
-  },
-  // Добавляем методы в userService:
 
   async updateUserProfile(
     userId: number,

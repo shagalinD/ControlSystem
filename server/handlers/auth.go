@@ -17,7 +17,7 @@ type AuthHandler struct {
 
 func NewAuthHandler(db *gorm.DB, jwtSecret string) *AuthHandler {
     return &AuthHandler{
-        Handler:   Handler{DB: db},
+        Handler:   *NewHandler(db), // 
         JWTSecret: jwtSecret,
     }
 }

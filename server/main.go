@@ -47,7 +47,7 @@ func main() {
     projectHandler := handlers.NewProjectHandler(db)
     defectHandler := handlers.NewDefectHandler(db)
     commentHandler := handlers.NewCommentHandler(db)
-    
+    attachmentHandler := handlers.NewAttachmentHandler(db)
     // Группа аутентификации
     authGroup := r.Group("/auth")
     {
@@ -83,8 +83,6 @@ func main() {
             defects.PATCH("/:id/status", defectHandler.UpdateDefectStatus)
             defects.DELETE("/:id", defectHandler.DeleteDefect)
         }
-
-        attachmentHandler := handlers.NewAttachmentHandler(db)
 
         attachments := api.Group("/attachments")
         {

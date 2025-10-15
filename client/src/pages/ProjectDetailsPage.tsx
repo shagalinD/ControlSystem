@@ -29,7 +29,7 @@ export const ProjectDetailsPage: React.FC = () => {
       ])
 
       setProject(projectResponse.project)
-      setDefects(defectsResponse.data)
+      setDefects(defectsResponse.defects || []) // Исправляем здесь
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Ошибка загрузки данных проекта'

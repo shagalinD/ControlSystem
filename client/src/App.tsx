@@ -16,6 +16,12 @@ import { CreateDefectPage } from './pages/CreateDefectPage'
 import { ProjectsPage } from './pages/ProjectPage'
 import { CreateProjectPage } from './pages/CreateProjectPage'
 import { ProjectDetailsPage } from './pages/ProjectDetailsPage'
+import { DefectDetailsPage } from './pages/DefectDetailsPage'
+import { EditDefectPage } from './pages/EditDefectPage'
+import { EditProjectPage } from './pages/EditProjectPage'
+import { ReportsPage } from './pages/ReportsPage'
+import { ProfilePage } from './pages/ProfilePage'
+import { RegisterPage } from './pages/RegisterPage'
 
 const App: React.FC = () => {
   const { isAuthenticated, initializeAuth, isLoading } = useAuthStore()
@@ -41,6 +47,12 @@ const App: React.FC = () => {
             !isAuthenticated ? <LoginPage /> : <Navigate to='/' replace />
           }
         />
+        <Route
+          path='/register'
+          element={
+            !isAuthenticated ? <RegisterPage /> : <Navigate to='/' replace />
+          }
+        />
 
         <Route
           path='/'
@@ -53,10 +65,14 @@ const App: React.FC = () => {
           <Route index element={<HomePage />} />
           <Route path='defects' element={<DefectsPage />} />
           <Route path='defects/create' element={<CreateDefectPage />} />
-          // Внутри Route с Layout добавляем:
+          <Route path='defects/:id' element={<DefectDetailsPage />} />
+          <Route path='defects/:id/edit' element={<EditDefectPage />} />
           <Route path='projects' element={<ProjectsPage />} />
           <Route path='projects/create' element={<CreateProjectPage />} />
           <Route path='projects/:id' element={<ProjectDetailsPage />} />
+          <Route path='projects/:id/edit' element={<EditProjectPage />} />
+          <Route path='reports' element={<ReportsPage />} />
+          <Route path='profile' element={<ProfilePage />} />
           <Route path='*' element={<Navigate to='/' replace />} />
         </Route>
       </Routes>

@@ -58,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
   )
 
   return (
-    <aside className='w-64 bg-white shadow-sm border-r border-gray-200'>
+    <aside className='hidden w-64 bg-white shadow-sm border-r border-gray-200'>
       <nav className='p-4 space-y-2'>
         {filteredNavItems.map((item) => (
           <Link

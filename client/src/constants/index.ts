@@ -83,6 +83,7 @@ export const ROUTES = {
   PROJECTS: '/projects',
   PROJECTS_CREATE: '/projects/create',
   PROJECTS_VIEW: '/projects/:id',
+  PROJECTS_EDIT: '/projects/:id/edit',
   REPORTS: '/reports',
   PROFILE: '/profile',
 } as const

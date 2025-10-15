@@ -12,7 +12,7 @@ export const ProjectsPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string>('')
-  const [filters] = useState<ProjectFilters>({
+  const [filters, setFilters] = useState<ProjectFilters>({
     page: 1,
     page_size: 20,
   })
@@ -23,7 +23,8 @@ export const ProjectsPage: React.FC = () => {
 
     try {
       const response = await projectService.getProjects(filters)
-      setProjects(response.data)
+      // Исправляем здесь: сервер возвращает { projects: [], pagination: {} }
+      setProjects(response.projects || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка загрузки проектов')
     } finally {
