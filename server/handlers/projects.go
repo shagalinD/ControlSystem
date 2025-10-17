@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"kopatel_online/models"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -21,11 +22,9 @@ func NewProjectHandler(db *gorm.DB) *ProjectHandler {
 func (h *ProjectHandler) GetProjects(c *gin.Context) {
     var projects []models.Project
     
-    query := h.DB.Preload("Manager")
-    
-    // Пагинация
-    page := 1
-    pageSize := 20
+    query := h.DB.Preload("Manager").Preload("Defects")
+    page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+    pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
     
     if err := query.Offset((page - 1) * pageSize).Limit(pageSize).Find(&projects).Error; err != nil {
         h.internalError(c, "Failed to fetch projects")

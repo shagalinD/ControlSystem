@@ -45,8 +45,8 @@ export const EditDefectPage: React.FC = () => {
 
         const defectData = defectResponse.defect
         setDefect(defectData)
-        setProjects(projectsResponse.data)
-        setEngineers(engineersResponse.data)
+        setProjects(projectsResponse.projects)
+        setEngineers(engineersResponse.engineers)
 
         // Заполняем форму данными дефекта
         reset({

@@ -41,7 +41,7 @@ export const EditProjectPage: React.FC = () => {
 
         const projectData = projectResponse.project
         setProject(projectData)
-        setManagers(managersResponse.data)
+        setManagers(managersResponse.managers)
 
         // Заполняем форму данными проекта
         reset({

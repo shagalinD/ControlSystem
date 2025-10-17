@@ -117,10 +117,10 @@ export const DefectDetailsPage: React.FC = () => {
 
   return (
     <div className='max-w-6xl mx-auto space-y-6'>
-      <div className='flex justify-between items-start'>
+      <div className='sm:flex justify-between items-start'>
         <div>
           <h1 className='text-2xl font-bold text-gray-900'>{defect.title}</h1>
-          <div className='flex items-center mt-2 space-x-4 text-sm text-gray-600'>
+          <div className='flex-col sm:flex-row flex sm:items-center mt-2 sm:space-x-4 text-sm text-gray-600'>
             <span>Проект: {defect.project.name}</span>
             <span>•</span>
             <span>
@@ -131,13 +131,13 @@ export const DefectDetailsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className='flex space-x-3'>
+        <div className='flex-col space-y-3 flex sm:flex-row sm:space-x-3 sm:space-y-0'>
           {canEditDefect && (
             <Link to={`/defects/${defect.id}/edit`}>
               <Button variant='secondary'>Редактировать</Button>
             </Link>
           )}
-          <Link to='/defects'>
+          <Link className='m-0' to='/defects'>
             <Button variant='secondary'>Назад к списку</Button>
           </Link>
         </div>
