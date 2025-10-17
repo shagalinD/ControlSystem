@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { Sidebar } from './Sidebar'
 import { FiMenu } from 'react-icons/fi'
@@ -9,6 +9,11 @@ export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
   const asideRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
+  const location = useLocation()
+
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

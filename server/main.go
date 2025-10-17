@@ -48,6 +48,7 @@ func main() {
     defectHandler := handlers.NewDefectHandler(db)
     commentHandler := handlers.NewCommentHandler(db)
     attachmentHandler := handlers.NewAttachmentHandler(db)
+    userHandler := handlers.NewUserHandler(db)
     // Группа аутентификации
     authGroup := r.Group("/auth")
     {
@@ -59,6 +60,12 @@ func main() {
     api := r.Group("/api")
     api.Use(authHandler.AuthMiddleware())
     {
+         users := api.Group("/users")
+        {
+            users.GET("/engineers", userHandler.GetEngineers)
+            users.GET("/managers", userHandler.GetManagers)
+            users.GET("", userHandler.GetAllUsers)
+        }
         // Текущий пользователь
         api.GET("/me", authHandler.GetCurrentUser)
         

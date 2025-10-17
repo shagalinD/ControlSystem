@@ -9,6 +9,24 @@ interface UsersResponse {
     total_pages: number
   }
 }
+interface EngineersResponse {
+  engineers: User[]
+  pagination: {
+    page: number
+    page_size: number
+    total: number
+    total_pages: number
+  }
+}
+interface MaganersResponse {
+  managers: User[]
+  pagination: {
+    page: number
+    page_size: number
+    total: number
+    total_pages: number
+  }
+}
 export const userService = {
   async getUsers(): Promise<UsersResponse> {
     try {
@@ -19,9 +37,9 @@ export const userService = {
     }
   },
 
-  async getEngineers(): Promise<UsersResponse> {
+  async getEngineers(): Promise<EngineersResponse> {
     try {
-      const response = await api.get<ApiResponse<UsersResponse>>(
+      const response = await api.get<ApiResponse<EngineersResponse>>(
         '/api/users/engineers'
       )
       return handleApiResponse(response)
@@ -30,9 +48,9 @@ export const userService = {
     }
   },
 
-  async getManagers(): Promise<UsersResponse> {
+  async getManagers(): Promise<MaganersResponse> {
     try {
-      const response = await api.get<ApiResponse<UsersResponse>>(
+      const response = await api.get<ApiResponse<MaganersResponse>>(
         '/api/users/managers'
       )
       return handleApiResponse(response)

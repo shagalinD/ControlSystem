@@ -27,14 +27,6 @@ type UserLoginRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
-type UserResponse struct {
-	ID       uint   `json:"id"`
-	Email    string `json:"email"`
-	FullName string `json:"full_name"`
-	RoleID   uint   `json:"role_id"`
-	RoleName string `json:"role_name"`
-}
-
 func (u *User) SetPassword(password string) error {
 	hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -49,12 +41,30 @@ func (u *User) CheckPassword(password string) bool {
 	return err == nil
 }
 
+type UserResponse struct {
+    ID        uint   `json:"id"`
+    Email     string `json:"email"`
+    FullName  string `json:"full_name"`
+    RoleID    uint   `json:"role_id"`
+    RoleName  string `json:"role_name"`
+    CreatedAt string `json:"created_at,omitempty"`
+    UpdatedAt string `json:"updated_at,omitempty"`
+}
+
+// ToResponse - преобразует User в UserResponse
 func (u *User) ToResponse() UserResponse {
-	return UserResponse{
-		ID:       u.ID,
-		Email:    u.Email,
-		FullName: u.FullName,
-		RoleID:   u.RoleID,
-		RoleName: u.Role.RoleName,
-	}
+    roleName := ""
+    if u.Role.ID != 0 {
+        roleName = u.Role.RoleName
+    }
+    
+    return UserResponse{
+        ID:        u.ID,
+        Email:     u.Email,
+        FullName:  u.FullName,
+        RoleID:    u.RoleID,
+        RoleName:  roleName,
+        CreatedAt: u.CreatedAt.Format("2006-01-02T15:04:05Z"),
+        UpdatedAt: u.UpdatedAt.Format("2006-01-02T15:04:05Z"),
+    }
 }
