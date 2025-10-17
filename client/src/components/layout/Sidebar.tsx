@@ -5,9 +5,11 @@ import { ROUTES } from '../../constants'
 
 interface SidebarProps {
   role: UserRole | undefined
+  ref: React.Ref<HTMLDivElement>
+  isMenuOpen: boolean
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ role, ref, isMenuOpen }) => {
   const location = useLocation()
 
   const isActive = (path: string) => {
@@ -58,7 +60,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
   )
 
   return (
-    <aside className='hidden w-64 bg-white shadow-sm border-r border-gray-200'>
+    <aside
+      ref={ref}
+      className={`fixed top-0 left-0 shadow-xl z-50 transform transition-transform duration-300 ease-in-out h-full w-64 bg-white border-r border-gray-200 ${
+        isMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
+    >
       <nav className='p-4 space-y-2'>
         {filteredNavItems.map((item) => (
           <Link

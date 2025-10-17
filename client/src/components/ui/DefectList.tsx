@@ -25,10 +25,10 @@ export const DefectList: React.FC<DefectListProps> = ({ defects }) => {
               <th className='hidden lg:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                 Статус
               </th>
-              <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+              <th className='hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                 Приоритет
               </th>
-              <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+              <th className='hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                 Срок
               </th>
             </tr>
@@ -40,15 +40,15 @@ export const DefectList: React.FC<DefectListProps> = ({ defects }) => {
 
               return (
                 <tr key={defect.id} className='hover:bg-gray-50'>
-                  <td className='px-6 py-4 whitespace-nowrap'>
+                  <td className='px-6 py-4'>
                     <div>
                       <Link
                         to={`/defects/${defect.id}`}
-                        className='text-sm font-medium text-blue-600 hover:text-blue-900'
+                        className='block truncate max-w-[200px] md:max-w-sm lg:max-w-md xl:max-w-lg text-sm font-medium text-blue-600 hover:text-blue-900 '
                       >
                         {defect.title}
                       </Link>
-                      <p className='text-sm text-gray-500 truncate max-w-xs'>
+                      <p className='text-sm text-gray-500 truncate max-w-[200px] md:max-w-sm lg:max-w-md xl:max-w-lg'>
                         {defect.description}
                       </p>
                     </div>
@@ -63,7 +63,7 @@ export const DefectList: React.FC<DefectListProps> = ({ defects }) => {
                       {statusInfo.label}
                     </span>
                   </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
+                  <td className='hidden md:table-cell px-6 py-4 whitespace-nowrap'>
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${priorityInfo.color}`}
                     >
@@ -71,7 +71,7 @@ export const DefectList: React.FC<DefectListProps> = ({ defects }) => {
                     </span>
                   </td>
 
-                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
+                  <td className='hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
                     {defect.deadline
                       ? new Date(defect.deadline).toLocaleDateString('ru-RU')
                       : 'Не установлен'}

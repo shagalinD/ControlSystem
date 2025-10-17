@@ -60,16 +60,16 @@ export const DefectsPage: React.FC = () => {
 
   return (
     <div className='space-y-6'>
-      <div className='flex justify-between items-center'>
+      <div className='sm:flex sm:justify-between sm:items-center'>
         <div>
           <h1 className='text-2xl font-bold text-gray-900'>Дефекты</h1>
-          <p className='text-gray-600 mt-1'>
+          <p className='hidden sm:block text-gray-600 mt-1'>
             Список всех дефектов строительных объектов
           </p>
         </div>
 
         {(user?.role_name === 'engineer' || user?.role_name === 'manager') && (
-          <Link to='/defects/create'>
+          <Link className='max-sm:block max-sm:my-5' to='/defects/create'>
             <Button>Создать дефект</Button>
           </Link>
         )}
