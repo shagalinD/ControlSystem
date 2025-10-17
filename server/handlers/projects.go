@@ -7,13 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
-// GetProject - получение проекта по ID
 type ProjectHandler struct {
     Handler
 }
 
 func NewProjectHandler(db *gorm.DB) *ProjectHandler {
-    return &ProjectHandler{Handler: Handler{DB: db}}
+    return &ProjectHandler{
+        Handler: *NewHandler(db), // Важно: создаем через NewHandler
+    }
 }
 
 // GetProjects - получение списка проектов
@@ -33,8 +34,6 @@ func (h *ProjectHandler) GetProjects(c *gin.Context) {
     
     h.success(c, gin.H{
         "projects": projects,
-        "page":     page,
-        "pageSize": pageSize,
     }, "Projects retrieved successfully")
 }
 
@@ -59,16 +58,6 @@ func (h *ProjectHandler) CreateProject(c *gin.Context) {
     if !h.validateRequest(c, &req) {
         return
     }
-    
-    // Получаем текущего пользователя из контекста (теперь метод доступен)
-    user, err := h.GetUserFromContext(c)
-    if err != nil {
-        h.unauthorized(c, "User not authenticated")
-        return
-    }
-    
-    // Логируем кто создает проект (для отладки)
-    println("Project created by user:", user.Email)
     
     // Проверяем, что менеджер существует
     var manager models.User

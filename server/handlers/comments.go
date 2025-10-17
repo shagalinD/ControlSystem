@@ -14,9 +14,10 @@ type CommentHandler struct {
 }
 
 func NewCommentHandler(db *gorm.DB) *CommentHandler {
-    return &CommentHandler{Handler: Handler{DB: db}}
+    return &CommentHandler{
+        Handler: *NewHandler(db),
+    }
 }
-
 // GetComments - получение комментариев для дефекта
 func (h *CommentHandler) GetComments(c *gin.Context) {
     defectID := c.Param("defect_id")

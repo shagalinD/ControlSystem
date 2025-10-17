@@ -15,7 +15,9 @@ type ReportHandler struct {
 }
 
 func NewReportHandler(db *gorm.DB) *ReportHandler {
-    return &ReportHandler{Handler: Handler{DB: db}}
+    return &ReportHandler{
+        Handler: *NewHandler(db), // Исправляем здесь
+    }
 }
 
 // GetDefectsReport - аналитический отчет по дефектам

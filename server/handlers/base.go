@@ -16,9 +16,10 @@ type Handler struct {
 }
 
 func NewHandler(db *gorm.DB) *Handler {
+    validate := validator.New()
     return &Handler{
         DB:       db,
-        Validate: validator.New(),
+        Validate: validate,
     }
 }
 
@@ -39,7 +40,6 @@ func (h *Handler) success(c *gin.Context, data interface{}, message string) {
     })
 }
 
-
 // Ошибка
 func (h *Handler) error(c *gin.Context, status int, message string) {
     c.JSON(status, Response{
@@ -52,6 +52,12 @@ func (h *Handler) error(c *gin.Context, status int, message string) {
 func (h *Handler) validateRequest(c *gin.Context, req interface{}) bool {
     if err := c.ShouldBindJSON(req); err != nil {
         h.error(c, http.StatusBadRequest, "Invalid request data: "+err.Error())
+        return false
+    }
+    
+    // Проверяем что валидатор инициализирован
+    if h.Validate == nil {
+        h.internalError(c, "Validator not initialized")
         return false
     }
     
@@ -80,21 +86,23 @@ func (h *Handler) unauthorized(c *gin.Context, message string) {
     h.error(c, http.StatusUnauthorized, message)
 }
 
-// GetUserFromContext - получение пользователя из контекста (общий метод)
+// GetUserFromContext - получение пользователя из контекста
 func (h *Handler) GetUserFromContext(c *gin.Context) (*models.User, error) {
     userID, exists := c.Get("user_id")
     if !exists {
         return nil, fmt.Errorf("user not authenticated")
     }
     
-    userIDUint, ok := userID.(uint)
-    if !ok {
-        // Если тип uint не подходит, пробуем float64 (из JWT)
-        if userIDFloat, ok := userID.(float64); ok {
-            userIDUint = uint(userIDFloat)
-        } else {
-            return nil, fmt.Errorf("invalid user ID type")
-        }
+    var userIDUint uint
+    switch v := userID.(type) {
+    case uint:
+        userIDUint = v
+    case float64:
+        userIDUint = uint(v)
+    case int:
+        userIDUint = uint(v)
+    default:
+        return nil, fmt.Errorf("invalid user ID type: %T", userID)
     }
     
     var user models.User

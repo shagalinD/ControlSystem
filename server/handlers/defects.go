@@ -14,9 +14,10 @@ type DefectHandler struct {
 }
 
 func NewDefectHandler(db *gorm.DB) *DefectHandler {
-    return &DefectHandler{Handler: Handler{DB: db}}
+    return &DefectHandler{
+        Handler: *NewHandler(db), 
+    }
 }
-
 // GetDefects - получение списка дефектов с фильтрацией
 func (h *DefectHandler) GetDefects(c *gin.Context) {
     var defects []models.Defect

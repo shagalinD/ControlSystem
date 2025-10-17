@@ -19,12 +19,10 @@ type AttachmentHandler struct {
 }
 
 func NewAttachmentHandler(db *gorm.DB) *AttachmentHandler {
-    // Создаем папку для загрузок, если её нет
     uploadPath := "./uploads"
-    os.MkdirAll(uploadPath, 0755)
     
     return &AttachmentHandler{
-        Handler:    Handler{DB: db},
+        Handler:    *NewHandler(db), // Исправляем здесь
         UploadPath: uploadPath,
     }
 }
