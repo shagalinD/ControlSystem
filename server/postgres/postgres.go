@@ -79,6 +79,7 @@ func autoMigrate(db *gorm.DB) error {
         &models.Project{},
         &models.Defect{},
         &models.Comment{},
+        &models.DefectHistory{},
     }
     
     for _, model := range models {

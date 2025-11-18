@@ -12,7 +12,7 @@ type UserHandler struct {
 }
 
 func NewUserHandler(db *gorm.DB) *UserHandler {
-    return &UserHandler{Handler: Handler{DB: db}}
+    return &UserHandler{Handler: *NewHandler(db)}
 }
 
 // GetEngineers - получение списка инженеров
@@ -82,4 +82,29 @@ func (h *UserHandler) GetAllUsers(c *gin.Context) {
     h.success(c, gin.H{
         "users": userResponses,
     }, "Users retrieved successfully")
+}
+
+// UpdateUserData - обновляем данные пользователя
+func (h *UserHandler) UpdateUserData(c *gin.Context) {
+    var req models.UserUpdateRequest
+    if !h.validateRequest(c, &req) {
+        return
+    }
+    
+    user, err := h.GetUserFromContext(c)
+    if err != nil {
+        h.unauthorized(c, "user is not authorized")
+    }
+
+    user.FullName = req.FullName
+    user.Email = req.Email 
+    
+    if err := h.DB.Save(&user).Error; err != nil {
+        h.internalError(c, "error on updating user")
+        return 
+    }
+    
+    h.success(c, gin.H{
+        "user": user,
+    }, "Update user successful")
 }

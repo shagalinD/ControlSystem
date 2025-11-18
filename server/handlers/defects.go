@@ -97,7 +97,8 @@ func (h *DefectHandler) GetDefect(c *gin.Context) {
 // CreateDefect - создание нового дефекта
 func (h *DefectHandler) CreateDefect(c *gin.Context) {
     var req models.DefectCreateRequest
-    if !h.validateRequest(c, &req) {
+    if err := c.ShouldBindJSON(&req); err != nil {
+        h.badRequest(c, "Invalid request data: " + err.Error())
         return
     }
     
@@ -166,7 +167,8 @@ func (h *DefectHandler) UpdateDefectStatus(c *gin.Context) {
         Status models.DefectStatus `json:"status" validate:"required,defect_status"`
     }
     
-    if !h.validateRequest(c, &req) {
+    if err := c.ShouldBindJSON(&req); err != nil {
+        h.badRequest(c, "Invalid request data: " + err.Error())
         return
     }
     
@@ -300,7 +302,11 @@ func (h *DefectHandler) UpdateDefect(c *gin.Context) {
         h.logDefectChange(defect.ID, user.ID, "priority", string(defect.Priority), string(*req.Priority))
         defect.Priority = *req.Priority
     }
-    if req.AssigneeID != nil {
+    if req.Deadline != nil && *req.Deadline != *defect.Deadline {
+        h.logDefectChange(defect.ID, user.ID, "deadline", defect.Deadline.String(), req.Deadline.String())
+        defect.Deadline = req.Deadline
+    }
+    if req.AssigneeID != nil && *req.AssigneeID != *defect.AssigneeID {
         oldAssignee := "none"
         if defect.AssigneeID != nil {
             oldAssignee = fmt.Sprintf("%d", *defect.AssigneeID)

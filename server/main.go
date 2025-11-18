@@ -65,6 +65,7 @@ func main() {
             users.GET("/engineers", userHandler.GetEngineers)
             users.GET("/managers", userHandler.GetManagers)
             users.GET("", userHandler.GetAllUsers)
+            users.PUT("/:id", userHandler.UpdateUserData)
         }
         // Текущий пользователь
         api.GET("/me", authHandler.GetCurrentUser)

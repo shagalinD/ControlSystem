@@ -22,6 +22,11 @@ type UserCreateRequest struct {
 	RoleID   uint   `json:"role_id" validate:"required"`
 }
 
+type UserUpdateRequest struct {
+	Email string `json:"email" validate:"required,email"`
+	FullName string `json:"full_name" validate:"required"`
+}
+
 type UserLoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`

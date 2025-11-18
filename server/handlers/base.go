@@ -27,7 +27,7 @@ func NewHandler(db *gorm.DB) *Handler {
 type Response struct {
     Success bool        `json:"success"`
     Message string      `json:"message,omitempty"`
-    Data    interface{} `json:"data,omitempty"`
+    Data    any `json:"data,omitempty"`
     Error   string      `json:"error,omitempty"`
 }
 
