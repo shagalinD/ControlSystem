@@ -16,10 +16,12 @@ func main() {
     r := gin.Default()
     
     // CORS middleware
+    // ЗАМЕНИТЬ текущий CORS middleware на этот:
     r.Use(func(c *gin.Context) {
-        c.Header("Access-Control-Allow-Origin", "*")
+        c.Header("Access-Control-Allow-Origin", "http://localhost:5173") // Ваш React dev server
         c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
         c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
+        c.Header("Access-Control-Allow-Credentials", "true")
         
         if c.Request.Method == "OPTIONS" {
             c.AbortWithStatus(204)
@@ -98,6 +100,15 @@ func main() {
             reports.GET("/project/:project_id", proxyHandler.ContentProxy())
             reports.GET("/defects/export", proxyHandler.ContentProxy())
             reports.GET("/user-activity", proxyHandler.ContentProxy())
+        }
+
+        users := api.Group("/users")
+        {
+            users.GET("/engineers", proxyHandler.AuthProxy())
+            users.GET("/managers", proxyHandler.AuthProxy())
+            users.GET("", proxyHandler.AuthProxy())
+            users.GET("/:id", proxyHandler.AuthProxy())
+            users.PUT("/:id", proxyHandler.AuthProxy())
         }
     }
     

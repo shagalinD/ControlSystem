@@ -67,7 +67,7 @@ func (h *CommentHandler) CreateComment(c *gin.Context) {
     }
     
     // Проверяем, что defect_id из пути совпадает с defect_id в теле запроса
-    if req.DefectID != defectID {
+    if req.DefectID != uint(defectID) {
         h.badRequest(c, "Defect ID in path and body must match")
         return
     }

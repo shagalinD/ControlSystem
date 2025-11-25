@@ -27,21 +27,8 @@ func main() {
     
     r := gin.Default()
     
-    // CORS middleware
-    r.Use(func(c *gin.Context) {
-        c.Header("Access-Control-Allow-Origin", "*")
-        c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-        c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-        
-        if c.Request.Method == "OPTIONS" {
-            c.AbortWithStatus(204)
-            return
-        }
-        
-        c.Next()
-    })
-    
     authHandler := handlers.NewAuthHandler(db, cfg.JWTSecret)
+    userHandler := handlers.NewUserHandler(db, cfg.JWTSecret)
     
     // Public routes
     authGroup := r.Group("/auth")
@@ -54,7 +41,18 @@ func main() {
     api := r.Group("/api")
     api.Use(middleware.JWTMiddleware(cfg.JWTSecret))
     {
+        // Текущий пользователь
         api.GET("/me", authHandler.GetCurrentUser)
+        
+        // Пользователи
+        users := api.Group("/users")
+        {
+            users.GET("/engineers", userHandler.GetEngineers)
+            users.GET("/managers", userHandler.GetManagers)
+            users.GET("", userHandler.GetAllUsers)
+            users.GET("/:id", userHandler.GetUserByID)
+            users.PUT("/:id", userHandler.UpdateUserData)
+        }
     }
     
     // Health check

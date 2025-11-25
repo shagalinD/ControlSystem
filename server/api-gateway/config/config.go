@@ -1,10 +1,7 @@
 package config
 
 import (
-	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -16,10 +13,6 @@ type Config struct {
 }
 
 func Load() *Config {
-    if err := godotenv.Load(); err != nil {
-        log.Println("No .env file found, using system environment variables")
-    }
-    
     return &Config{
         GatewayPort:         getEnv("GATEWAY_PORT", "8080"),
         AuthServiceURL:      getEnv("AUTH_SERVICE_URL", "http://auth-service:8081"),
