@@ -12,7 +12,7 @@ export const ProjectsPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string>('')
-  const [filters, setFilters] = useState<ProjectFilters>({
+  const [filters] = useState<ProjectFilters>({
     page: 1,
     page_size: 20,
   })

@@ -32,6 +32,7 @@ func main() {
     
     // Protected routes
     api := r.Group("/api")
+    api.Use(middleware.ServiceAuthMiddleware())
     api.Use(middleware.JWTMiddleware(cfg.JWTSecret))
     {
         // Проекты

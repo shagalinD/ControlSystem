@@ -15,10 +15,9 @@ func main() {
     
     r := gin.Default()
     
-    // CORS middleware
-    // ЗАМЕНИТЬ текущий CORS middleware на этот:
+     // CORS middleware
     r.Use(func(c *gin.Context) {
-        c.Header("Access-Control-Allow-Origin", "http://localhost:5173") // Ваш React dev server
+        c.Header("Access-Control-Allow-Origin", "http://localhost:5173")
         c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS")
         c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
         c.Header("Access-Control-Allow-Credentials", "true")
@@ -30,7 +29,27 @@ func main() {
         
         c.Next()
     })
+
+    // Rate limiting configuration
+    rateLimitConfig := middleware.RateLimitConfig{
+        GlobalRate:   cfg.RateLimitGlobal,
+        AuthRate:     cfg.RateLimitAuth,
+        APIRate:      cfg.RateLimitAPI,
+        UploadRate:   cfg.RateLimitUpload,
+        UseRedis:     cfg.UseRedisRateLimit,
+        RedisURL:     cfg.RedisURL,
+        TrustProxy:   cfg.TrustProxy,
+    }
     
+    // Whitelist middleware (если есть whitelist IP)
+    if len(cfg.WhitelistIPs) > 0 {
+        r.Use(middleware.WhitelistMiddleware(cfg.WhitelistIPs))
+    }
+
+     // Rate limiting middleware
+    r.Use(middleware.RateLimitMiddleware(rateLimitConfig))
+    
+
     // JWT middleware для защищенных маршрутов
     r.Use(middleware.JWTMiddleware(cfg.JWTSecret))
     
@@ -135,7 +154,11 @@ func main() {
     })
     
     log.Printf("API Gateway starting on port %s", cfg.GatewayPort)
+    log.Printf("Rate limiting enabled: Global=%s, Auth=%s, API=%s, Upload=%s", 
+        cfg.RateLimitGlobal, cfg.RateLimitAuth, cfg.RateLimitAPI, cfg.RateLimitUpload)
+        
     if err := r.Run(":" + cfg.GatewayPort); err != nil {
         log.Fatal("Failed to start API Gateway:", err)
     }
+    
 }
